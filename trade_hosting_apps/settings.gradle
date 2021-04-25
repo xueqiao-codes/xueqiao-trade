@@ -1,0 +1,91 @@
+include ':trade_hosting_framework'
+include ':trade_hosting_storage_api'
+include ':trade_hosting_utils'
+include ':trade_hosting_push_sdk'
+include ':trade_hosting_contract'
+include ':trade_hosting_storage_daemon'
+include ':trade_hosting_quot_comb_client'
+include ':trade_hosting_quot_comb_server'
+include ':trade_hosting_push_server'
+include ':trade_hosting_entry'
+include ':trade_hosting_arbitrage_client'
+include ':trade_hosting_arbitrage_server'
+include ':trade_hosting_asset_client'
+include ':trade_hosting_asset_server'
+include ':trade_hosting_history_client'
+include ':trade_hosting_history_server'
+include ':trade_hosting_startup'
+include ':trade_hosting_position_statis_client'
+include ':trade_hosting_position_statis_server'
+include ':trade_hosting_tradeaccount_data_client'
+include ':trade_hosting_tradeaccount_data_server'
+include ':trade_hosting_position_adjust_client'
+include ':trade_hosting_position_adjust_server'
+include ':trade_hosting_position_adjust_assign_client'
+
+include ':trade_hosting_id_maker_api'
+include ':trade_hosting_id_maker_server'
+
+include ':trade_hosting_dealing_client'
+include ':trade_hosting_dealing_server'
+
+include ':trade_hosting_tasknote_client'
+include ':trade_hosting_tasknote_server'
+
+include ':trade_hosting_upside_entry_client'
+
+include ':trade_hosting_position_fee_client'
+include ':trade_hosting_position_fee_server'
+
+include ':trade_hosting_risk_manager_client'
+include ':trade_hosting_risk_manager_server'
+
+include ':trade_hosting_testing'
+
+project(':trade_hosting_framework').projectDir = new File('trade_hosting_framework/java')
+project(':trade_hosting_storage_api').projectDir = new File('trade_hosting_storage/java/api')
+project(':trade_hosting_push_sdk').projectDir = new File('trade_hosting_push/sdk/java')
+
+project(':trade_hosting_storage_daemon').projectDir = new File('trade_hosting_storage/java/daemon')
+project(':trade_hosting_push_server').projectDir = new File('trade_hosting_push/server')
+project(':trade_hosting_entry').projectDir = new File('trade_hosting_entry/java')
+
+project(':trade_hosting_quot_comb_client').projectDir = new File('trade_hosting_quot_comb/client')
+project(':trade_hosting_quot_comb_server').projectDir = new File('trade_hosting_quot_comb/server')
+
+project(':trade_hosting_arbitrage_client').projectDir = new File('trade_hosting_arbitrage/client')
+project(':trade_hosting_arbitrage_server').projectDir = new File('trade_hosting_arbitrage/server')
+
+project(':trade_hosting_asset_client').projectDir = new File('trade_hosting_asset/client')
+project(':trade_hosting_asset_server').projectDir = new File('trade_hosting_asset/server')
+
+project(':trade_hosting_history_client').projectDir = new File('trade_hosting_history/client')
+project(':trade_hosting_history_server').projectDir = new File('trade_hosting_history/server')
+
+project(':trade_hosting_position_statis_client').projectDir = new File('trade_hosting_position_statis/client')
+project(':trade_hosting_position_statis_server').projectDir = new File('trade_hosting_position_statis/server')
+
+project(':trade_hosting_tradeaccount_data_client').projectDir = new File('trade_hosting_tradeaccount_data/client')
+project(':trade_hosting_tradeaccount_data_server').projectDir = new File('trade_hosting_tradeaccount_data/server')
+
+project(':trade_hosting_position_adjust_client').projectDir = new File('trade_hosting_position_adjust/client')
+project(':trade_hosting_position_adjust_server').projectDir = new File('trade_hosting_position_adjust/server')
+
+project(':trade_hosting_position_adjust_assign_client').projectDir = new File('trade_hosting_position_adjust_assign/client')
+
+project(':trade_hosting_id_maker_api').projectDir = new File('trade_hosting_id_maker/api/java')
+project(':trade_hosting_id_maker_server').projectDir = new File('trade_hosting_id_maker/id_maker_dao/java')
+
+project(':trade_hosting_dealing_client').projectDir = new File('trade_hosting_dealing/client')
+project(':trade_hosting_dealing_server').projectDir = new File('trade_hosting_dealing/server')
+
+project(':trade_hosting_tasknote_client').projectDir = new File('trade_hosting_tasknote/client')
+project(':trade_hosting_tasknote_server').projectDir = new File('trade_hosting_tasknote/server')
+
+project(':trade_hosting_upside_entry_client').projectDir = new File('trade_hosting_upside_entry/client')
+
+project(':trade_hosting_position_fee_client').projectDir = new File('trade_hosting_position_fee/client')
+project(':trade_hosting_position_fee_server').projectDir = new File('trade_hosting_position_fee/server')
+
+project(':trade_hosting_risk_manager_client').projectDir = new File('trade_hosting_risk_manager/client')
+project(':trade_hosting_risk_manager_server').projectDir = new File('trade_hosting_risk_manager/server')

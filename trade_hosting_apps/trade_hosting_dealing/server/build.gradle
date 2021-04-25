@@ -1,0 +1,20 @@
+apply plugin:'java'
+apply plugin:'application'
+apply plugin:'com.github.johnrengelman.shadow'
+
+mainClassName = 'xueqiao.trade.hosting.dealing.app.AppMain'
+
+shadowJar {
+    baseName = 'trade_hosting_dealing'
+    classifier = 'jar-with-dependencies'
+    version = '1.0-SNAPSHOT'
+}
+
+dependencies {
+    compile project(':trade_hosting_dealing_client')
+    compile project(':trade_hosting_id_maker_api')
+    compile project(':trade_hosting_upside_entry_client')
+    compile project(':trade_hosting_utils')
+    compile project(':trade_hosting_risk_manager_client')
+    compile 'com.longsheng.xueqiao:contract_convertor:1.0'
+}

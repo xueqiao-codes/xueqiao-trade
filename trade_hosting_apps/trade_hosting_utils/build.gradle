@@ -1,0 +1,7 @@
+apply plugin:'java'
+
+dependencies {
+    compile project(':trade_hosting_storage_api')
+    compile 'commons-io:commons-io:2.6'
+    compile 'solider.watcher:filewatcher:1.1-SNAPSHOT'
+}

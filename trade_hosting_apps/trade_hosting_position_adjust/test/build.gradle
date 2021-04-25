@@ -1,0 +1,14 @@
+apply plugin:'java'
+apply plugin:'application'
+apply plugin:'com.github.johnrengelman.shadow'
+
+mainClassName = 'Main'
+
+shadowJar {
+	baseName = 'trade_hosting_position_adjust_test'
+	classifier = 'jar-with-dependencies'
+	version = '0.0.1-SNAPSHOT'
+}
+dependencies {
+	compile project(':trade_hosting_position_adjust_client')
+}

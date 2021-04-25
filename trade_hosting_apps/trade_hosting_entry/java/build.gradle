@@ -1,0 +1,27 @@
+apply plugin:'java'
+apply plugin:'application'
+apply plugin:'com.github.johnrengelman.shadow'
+
+mainClassName = 'xueqiao.trade.hosting.entry.App'
+
+shadowJar {
+    baseName = 'trade_hosting_entry'
+    classifier = 'jar-with-dependencies'
+    version = '0.0.1-SNAPSHOT'
+}
+
+dependencies {
+    compile project(':trade_hosting_storage_api')
+    compile project(':trade_hosting_arbitrage_client')
+    compile project(':trade_hosting_asset_client')
+    compile project(':trade_hosting_history_client')
+    compile project(':trade_hosting_tradeaccount_data_client')
+    compile project(':trade_hosting_position_statis_client')
+    compile project(':trade_hosting_position_adjust_client')
+    compile project(':trade_hosting_tasknote_client')
+    compile project(':trade_hosting_risk_manager_client')
+    compile project(':trade_hosting_position_fee_client')
+    compile project(':trade_hosting_utils')
+    compile 'net.objecthunter:exp4j:0.4.8'
+    compile 'org.soldier.platform.file_storage:libfilestorage:1.1-SNAPSHOT'
+}

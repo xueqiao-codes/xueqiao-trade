@@ -1,0 +1,7 @@
+apply plugin:'java'
+
+dependencies {
+	compile project(':trade_hosting_storage_api')
+	compile 'xueqiao.trade.hosting:libthqd_client:1.2-SNAPSHOT'
+	compile 'org.zeromq:jeromq:0.4.3'
+}

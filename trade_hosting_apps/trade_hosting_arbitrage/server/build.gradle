@@ -1,0 +1,25 @@
+apply plugin:'java'
+apply plugin:'application'
+apply plugin:'com.github.johnrengelman.shadow'
+
+mainClassName = 'xueqiao.trade.hosting.arbitrage.app.AppMain'
+
+shadowJar {
+    baseName = 'trade_hosting_arbitrage'
+    classifier = 'jar-with-dependencies'
+    version = '1.0-SNAPSHOT'
+}
+
+dependencies {
+	compile project(':trade_hosting_storage_api')
+	compile project(':trade_hosting_arbitrage_client')
+	compile project(':trade_hosting_dealing_client')
+	compile project(':trade_hosting_id_maker_api')
+	compile 'xueqiao.trade.hosting:libthqd_client:1.2-SNAPSHOT'
+	compile 'net.objecthunter:exp4j-xq:0.4.8-SNAPSHOT'
+	compile 'org.quartz-scheduler:quartz:2.2.1'
+	compile 'org.quartz-scheduler:quartz-jobs:2.2.1'
+	compile('org.matheclipse:matheclipse-core:1.0.0-SNAPSHOT'){
+		exclude group:'log4j',module:'log4j'
+	}
+}

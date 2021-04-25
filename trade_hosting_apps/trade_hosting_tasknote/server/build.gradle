@@ -1,0 +1,17 @@
+apply plugin:'java'
+apply plugin:'application'
+apply plugin:'com.github.johnrengelman.shadow'
+
+mainClassName = 'xueqiao.trade.hosting.tasknote.app.AppMain'
+
+shadowJar {
+    baseName = 'trade_hosting_tasknote'
+    classifier = 'jar-with-dependencies'
+    version = '1.0-SNAPSHOT'
+}
+
+dependencies {
+	compile project(':trade_hosting_storage_api')
+	compile project(':trade_hosting_tasknote_client')
+    compile project(':trade_hosting_arbitrage_client')
+}

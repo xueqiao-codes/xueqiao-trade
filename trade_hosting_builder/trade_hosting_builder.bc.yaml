@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: List
+items:
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: trade-hosting-builder
+    
+- kind: BuildConfig
+  apiVersion: v1
+  metadata: 
+    name: "trade-hosting-builder"
+    annotations: 
+      description: "Defines how to build trade-hosting-builder"
+      template.alpha.openshift.io/wait-for-ready: "true"
+  spec:
+    nodeSelector:
+      node-role.soldier.platform/builder: 'true'
+    source: 
+      type: "Git"
+      git: 
+        uri: "ssh://git@git.soldier-tools.svc:29418/xueqiao-trade/trade_hosting_builder.git"
+        ref: "master"
+      sourceSecret:
+        name: xueqiao-git
+    strategy: 
+      type: Source
+      sourceStrategy: 
+        from: 
+          kind: ImageStreamTag
+          namespace: soldier-platform
+          name: cpp-platform:latest
+    output:
+      to:
+        kind: ImageStreamTag
+        name: "trade-hosting-builder:latest"
+    triggers: 
+    - type: ImageChange
+    - type: ConfigChange
+    - type: Generic
+      generic: 
+        secret: "8ksd1898sdfk12mjcvdflzsdfpposdlfiwerk1lsdf"

@@ -1,0 +1,13 @@
+/out
+*.pyc
+*.class
+.settings/
+.project
+.cproject
+.pydevproject
+.classpath
+.Building.lock
+.sconsign.dblite
+blade_bin/
+build64_release/
+target/

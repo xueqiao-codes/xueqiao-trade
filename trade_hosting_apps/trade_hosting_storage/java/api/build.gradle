@@ -1,0 +1,8 @@
+apply plugin:'java'
+
+dependencies {
+	compile project(':trade_hosting_framework')
+	compile 'commons-io:commons-io:2.5'
+	compileOnly 'net.objecthunter:exp4j:0.4.8'
+	runtime 'com.kohlschutter.junixsocket:junixsocket-native-common:2.0.4'
+}

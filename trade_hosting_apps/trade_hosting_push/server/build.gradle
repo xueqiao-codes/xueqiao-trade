@@ -1,0 +1,25 @@
+apply plugin:'java'
+apply plugin:'application'
+apply plugin:'com.github.johnrengelman.shadow'
+
+mainClassName = 'xueqiao.trade.hosting.push.server.Main'
+
+shadowJar {
+    baseName = 'trade_hosting_push'
+    classifier = 'jar-with-dependencies'
+    version = '0.0.1-SNAPSHOT'
+}
+
+dependencies {
+	compile project(':trade_hosting_storage_api')
+	compile project(':trade_hosting_arbitrage_client')
+	compile project(':trade_hosting_asset_client')
+	compile project(':trade_hosting_position_adjust_client')
+	compile project(':trade_hosting_position_statis_client')
+	compile project(':trade_hosting_tasknote_client')
+	compile 'xueqiao.trade.hosting:libthqd_client:1.2-SNAPSHOT'
+	compile 'io.netty:netty-all:4.1.31.Final'
+	compile 'net.qihoo:qconf-client:1.0.0'
+	compile 'org.zeromq:jeromq:0.4.3'
+	compile 'com.google.code.gson:gson:2.8.1'
+}

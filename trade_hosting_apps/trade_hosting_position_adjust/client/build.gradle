@@ -1,0 +1,6 @@
+apply plugin:'java'
+
+dependencies {
+	compile project(':trade_hosting_storage_api')
+	compile project(':trade_hosting_position_adjust_assign_client')
+}

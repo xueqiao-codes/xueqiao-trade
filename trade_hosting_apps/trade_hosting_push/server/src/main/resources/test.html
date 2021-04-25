@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>行情接受测试页</title>
+<style>
+input {
+    margin-left:10px;
+}
+
+input[type="text"] {
+    width:150px;
+}
+</style>
+</head>
+<body>
+	<script type="text/javascript">
+		var getId = (function () {
+	    	"use strict";
+	   	 	var i = 0;
+	    	return function () {
+	        	return i++;
+	   	 };
+		})();
+		
+		var socket;
+		var loginMachineId = -1;
+		var loginUserId = -1;
+		var loginToken = "";
+		
+	    function login() {
+	       var machineId = document.getElementsByName("machineId")[0].value;
+	       var userId = document.getElementsByName("userId")[0].value;
+	       var token = document.getElementsByName("token")[0].value;
+	       
+	       if(machineId=="") {
+	    	   alert("请输入机器ID");
+	    	   return ;
+	       }
+	       
+	       if(userId=="") {
+	           alert("请输入用户ID");
+	           return ;
+	       }
+	       
+	       if (token=="") {
+	           alert("请输入用户Token");
+	           return ;
+	       }
+	       
+	       if (!window.WebSocket) {
+	           window.WebSocket = window.MozWebSocket;
+	       }
+	       if (!window.WebSocket) {
+	           alert("你的浏览器不支持Websocket");
+	           return ;
+	       }
+	       
+	       socket = new WebSocket("ws://" + document.domain + ":20021/connect?protocol=json&machineId=" 
+	    		   + machineId + "&subUserId="+ userId + "&token=" + token);
+           socket.onmessage = function(event) {
+               var topFrame = unSerialize(new xueqiao.trade.hosting.push.protocol.ProtocolFrame(), event.data)
+               if (topFrame.protocol == xueqiao.trade.hosting.push.protocol.ProtocolType.RESP) {
+            	   var respContent = topFrame.respContent;
+            	   console.log("get responseId" +  respContent.responseId 
+            			   + " for requestId=" + respContent.requestId + ", errorCode=" + respContent.errCode)
+               } else if (topFrame.protocol == xueqiao.trade.hosting.push.protocol.ProtocolType.QUOTATION) {
+            	   ta = document.getElementById('responseText');
+                   ta.value = ta.value + '\nquotation:' + JSON.stringify(topFrame.quotationItem);
+               } else if (topFrame.protocol == xueqiao.trade.hosting.push.protocol.ProtocolType.USERMSG) {
+            	   ta = document.getElementById('responseText');
+            	   ta.value = ta.value + '\nusermsg:' + JSON.stringify(topFrame.userMsg);
+               } else if (topFrame.protocol == xueqiao.trade.hosting.push.protocol.ProtocolType.SEQMSG) {
+            	   ta = document.getElementById('responseText');
+            	   ta.value = ta.value + '\nseqmsg:' + JSON.stringify(topFrame.seqMsg);
+               }
+           };
+           socket.onopen = function(event) {
+               var ta = document.getElementById('responseText');
+               loginMachineId = parseInt(machineId);
+               loginUserId = parseInt(userId);
+               loginToken = token;
+               ta.value = "连接开启!";
+           };
+           socket.onclose = function(event) {
+        	   if (event.target == socket) {
+        		   loginMachineId = -1;
+        		   loginUserId = -1;
+        		   loginToken = "";
+        		   var ta = document.getElementById('responseText');
+                   ta.value = ta.value + "连接被关闭";
+        	   }
+           };
+	    }
+
+		function send(message) {
+			if (!window.WebSocket) {
+				return;
+			}
+			
+			if (socket == null) {
+				alert("未登录...");
+				return ;
+			}
+			
+			if (socket.readyState == WebSocket.OPEN) {
+				socket.send(message);
+			} else {
+				alert("连接中...");
+			}
+		}
+		
+		function serialize(s) {
+			var transport = new Thrift.Transport("");
+			var protocol = new Thrift.Protocol(transport);
+			s.write(protocol);
+			return protocol.dump();
+		}
+		
+		function unSerialize(s, content) {
+			var transport = new Thrift.Transport("");
+			transport.setRecvBuffer(content);
+			var protocol = new Thrift.Protocol(transport);
+			s.read(protocol);
+			return s;
+		}
+		
+		function sendRequest(reqType, req) {
+			var topFrame = new xueqiao.trade.hosting.push.protocol.ProtocolFrame();
+			topFrame.protocol = xueqiao.trade.hosting.push.protocol.ProtocolType.REQ;
+			topFrame.reqContent = new xueqiao.trade.hosting.push.protocol.ReqContent();
+			
+			topFrame.reqContent.requestId = getId();
+			topFrame.reqContent.requestStructType = reqType;
+			topFrame.reqContent.requestStructBytes = window.btoa(serialize(req));
+			
+			send(serialize(topFrame));
+		}
+		
+		function subscribe() {
+			var platform = $('#platform').val();
+			var contractSymbol=$('#contractSymbol').val();
+			
+			if (contractSymbol == "") {
+				alert("请输入合约代码");
+				return ;
+			}
+			
+			var topic = new xueqiao.trade.hosting.push.protocol.QuotationTopic();
+			topic.platform = platform;
+			topic.contractSymbol = contractSymbol;
+			
+			var subscribeReq  = new xueqiao.trade.hosting.push.protocol.QuotationSubscribeReq();
+			subscribeReq.topics = []
+			subscribeReq.topics.push(topic);
+			sendRequest("QuotationSubscribeReq", subscribeReq);
+		}
+		
+		function unSubscribe() {
+			var platform = $('#platform').val();
+		    var contractSymbol=$('#contractSymbol').val();
+            
+            if (contractSymbol == "") {
+                alert("请输入合约代码");
+                return ;
+            }
+            
+            var topic = new xueqiao.trade.hosting.push.protocol.QuotationTopic();
+            topic.platform = platform;
+            topic.contractSymbol = contractSymbol;
+            
+            var unSubscribeReq  = new xueqiao.trade.hosting.push.protocol.QuotationUnSubscribeReq();
+            unSubscribeReq.topics = [];
+            unSubscribeReq.topics.push(topic)
+            
+            sendRequest("QuotationUnSubscribeReq", unSubscribeReq)
+		}
+		
+		function heartBeat() {
+			if (loginUserId == -1) {
+				return ;
+			}
+			
+			var heartBeatReq = new xueqiao.trade.hosting.push.protocol.HeartBeatReq();
+			heartBeatReq.machineId = loginMachineId;
+			heartBeatReq.subUserId = loginUserId;
+			heartBeatReq.token = loginToken;
+			sendRequest('HeartBeatReq', heartBeatReq);
+		}
+		
+		var timer = setInterval(function() {
+			heartBeat();
+		}, 20000);
+		
+	</script>
+	<form onsubmit="return false;">
+		<h3>行情：</h3>
+		<textarea id="responseText" style="width: 500px; height: 300px;"></textarea>
+		<br> 
+		<div style="margin-top:10px">
+		<label>机器ID:</label><input type="text" name="machineId"></input>
+		<label>子用户ID:</label><input type="text" name="userId" ></input>
+		<lable>用户Token:</label><input type="text" name="token"></input>
+		<input type="button" value="登录" onclick="login()"></input>
+		</div>
+		<div style="margin-top:10px">
+		<label>行情平台:</label>
+		<select id="platform">
+			<option>XQ</option>
+			<option>SXQ</option>
+			<option>CTP</option>
+			<option>SCTP</option>
+		</select>
+		<label>合约代码:</label><input type="text" id="contractSymbol"></input>
+		<input type="button" value="开始订阅" onclick="subscribe()" ></input>
+		<input type="button" value="取消订阅" onclick="unSubscribe()" ></input>
+		</div>
+	</form>
+	<br> 
+	<br> 
+</body>
+<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="js/thrift.js" ></script>
+<script type="text/javascript" src="js/quotation_item_types.js"></script>
+<script type="text/javascript" src="js/trade_hosting_push_protocol_types.js"></script>
+</html>

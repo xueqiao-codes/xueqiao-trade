@@ -1,0 +1,16 @@
+/out
+*.pyc
+*.class
+.settings/
+.project
+.cproject
+.pydevproject
+.classpath
+target/
+*.iml
+.idea
+.gradle
+*.ipr
+*.iws
+build/
+out/

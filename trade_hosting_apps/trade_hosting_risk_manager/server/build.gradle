@@ -1,0 +1,20 @@
+apply plugin:'java'
+apply plugin:'application'
+apply plugin:'com.github.johnrengelman.shadow'
+
+mainClassName = 'xueqiao.trade.hosting.risk.manager.app.AppMain'
+
+shadowJar {
+    baseName = 'trade_hosting_risk_manager'
+    classifier = 'jar-with-dependencies'
+    version = '1.0-SNAPSHOT'
+}
+
+dependencies {
+	compile project(':trade_hosting_storage_api')
+	compile project(':trade_hosting_risk_manager_client')
+	compile project(':trade_hosting_id_maker_api')
+	compile project(':trade_hosting_asset_client')
+	compile 'org.quartz-scheduler:quartz:2.2.1'
+	compile 'org.quartz-scheduler:quartz-jobs:2.2.1'
+}

@@ -1,0 +1,17 @@
+apply plugin:'java'
+apply plugin:'application'
+apply plugin:'com.github.johnrengelman.shadow'
+
+mainClassName = 'xueqiao.trade.hosting.startup.AppMain'
+
+shadowJar {
+    baseName = 'trade_hosting_startup'
+    classifier = 'jar-with-dependencies'
+    version = '1.0-SNAPSHOT'
+}
+
+dependencies {
+    compile project(':trade_hosting_framework');
+	compile 'com.satikey.tools.supervisord:supervisord4j:1.0'
+    compile 'org.soldier.platform.oss:libossapi:1.0-SNAPSHOT'
+}

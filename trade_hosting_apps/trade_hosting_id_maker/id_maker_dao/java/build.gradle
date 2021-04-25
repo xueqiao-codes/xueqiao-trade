@@ -1,0 +1,16 @@
+apply plugin:'java'
+apply plugin:'application'
+apply plugin:'com.github.johnrengelman.shadow'
+
+mainClassName = 'org.soldier.platform.id_maker_dao.app.AppMain'
+
+shadowJar {
+    baseName = 'trade_hosting_id_maker'
+    classifier = 'jar-with-dependencies'
+    version = '1.0-SNAPSHOT'
+}
+
+
+dependencies {
+    compile project(':trade_hosting_id_maker_api')
+}

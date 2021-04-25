@@ -1,0 +1,11 @@
+apply plugin:'java'
+
+dependencies {
+	compile 'org.soldier.platform:libsvr_platform:1.7'
+	compile 'org.apache.tomcat:tomcat-jdbc:9.0.8'
+	compile 'com.google.guava:guava:15.0'
+	compile 'org.soldier.platform:libdb_helper:1.0'
+	compile 'org.soldier.framework:libmessage_bus:1.1-SNAPSHOT'
+	compile 'mysql:mysql-connector-java:5.1.29'
+	compile 'junique:junique:1.0.4'
+}

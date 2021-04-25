@@ -1,0 +1,191 @@
+kind: Template
+apiVersion: v1
+metadata: 
+  name: trade-hosting-apps-template
+  annotations:
+    openshift.io/display-name: "Trade Hosting Apps"
+    description: "Trade hosting apps template"
+    tags: "Java"
+    iconClass: icon-openjdk
+parameters: 
+  - name: "HOSTING_NAME"
+    displayName: "Hosting Name"
+    description: "主机名，没有xueqiao.host后缀"
+    required: true
+  - name: "TRADEHOSTING_APPS_TAG"
+    displayName: "Trade Hosting Apps Image Tag"
+    description: "交易托管机应用Tag"
+    value: "latest"
+    required: true
+  - name: "ERRORCODE_AGENT_TAG"
+    displayName: "ErrorCode Agent Image Tag"
+    description: "错误码Agent的镜像版本Tag"
+    value: "latest"
+    required: true
+  - name: "FASTTHRIFT_PROXY_TAG"
+    displayName: "Fast Thrift Proxy Image Tag"
+    description: "fast_thrift_proxy镜像版本Tag"
+    value: "latest"
+    required: true
+
+message: "The following service(s) have been created in your project: ${NAME}.\n\nFor more information about using this template"
+labels: 
+  template: "trade-hosting-apps-template"
+  app: "trade-${HOSTING_NAME}"
+objects:
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata: 
+    name: "trade-${HOSTING_NAME}"
+    annotations: 
+      description: "Defines how to deploy the application server"
+      template.alpha.openshift.io/wait-for-ready: "true"
+  spec: 
+    strategy: 
+      type: Recreate
+    triggers: 
+    - type: ImageChange
+      imageChangeParams: 
+        automatic: true
+        containerNames: 
+        - trade-hosting-apps
+        from:
+          kind: ImageStreamTag
+          name: "trade-hosting-apps:${TRADEHOSTING_APPS_TAG}"
+    - type: ConfigChange
+    replicas: 1
+    selector: 
+      name: "trade-${HOSTING_NAME}"
+    template: 
+      metadata:
+        name: "trade-${HOSTING_NAME}"
+        labels:
+          name: "trade-${HOSTING_NAME}"
+      spec:
+        hostIPC: true
+        nodeSelector:
+          kubernetes.io/hostname: '${HOSTING_NAME}.xueqiao.host'
+        tolerations:
+        - key: "xueqiao.trade.hosting"
+          operator: "Equal"
+          value: "true"
+          effect: "NoExecute"
+        volumes:
+        - emptyDir: {}
+          name: errorcode-data
+        - emptyDir: {}
+          name: data-run
+        - hostPath: 
+            path: /storage/hosting
+            type: DirectoryOrCreate
+          name: data-hosting
+        - hostPath:
+            path: /data/message_bus/locks
+            type: Directory
+          name: mb-locks
+        - hostPath:
+            path: /usr/local/soldier/qconf_agent/script
+            type: Directory
+          name: qconf-scripts
+        - hostPath:
+            path: /data/configs/qconf
+            type: Directory
+          name: qconf-configs
+        - hostPath:
+            path: /data/applog
+            type: DirectoryOrCreate
+          name: applog
+        - configMap:
+            defaultMode: 420
+            name: hosting-authorized-keys-config-map
+          name: sshd-auth
+        containers:
+        - name: errorcode-agent
+          image: 'docker-registry.default.svc:5000/soldier-tools/errorcode-agent:${ERRORCODE_AGENT_TAG}'
+          resources:
+            limits:
+              cpu: 500m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 50Mi
+          volumeMounts:
+            - mountPath: /data/errorcode
+              name: errorcode-data
+            - mountPath: /data/applog
+              name: applog
+              
+        - name: fast-thrift-proxy
+          image: 'docker-registry.default.svc:5000/soldier-platform/fast-thrift-proxy:${FASTTHRIFT_PROXY_TAG}'
+          env: 
+          - name: TRADE_HOSTING
+            value: "true"
+          ports:
+          - containerPort: 8069
+            protocol: TCP
+            hostPort: 8069
+          resources: 
+            limits:
+              cpu: "1"
+              memory: 400Mi
+            requests:
+              cpu: "0.1"
+              memory: 200Mi
+          readinessProbe:
+            timeoutSeconds: 3
+            initialDelaySeconds: 3
+            tcpSocket: 
+              port: 8069
+          livenessProbe: 
+            timeoutSeconds: 3
+            initialDelaySeconds: 30
+            tcpSocket: 
+              port: 8069
+          volumeMounts:
+          - mountPath: /data/applog
+            name: applog
+          - mountPath: /data/run/
+            name: data-run
+            
+        - name: trade-hosting-apps
+          image: " "
+          env:
+          - name: HOST_ADDR
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          resources:
+            limits:
+              cpu: "3"
+              memory: "4.5Gi"
+            requests:
+              cpu: "1"
+              memory: "2Gi"
+          ports:
+          - containerPort: 36000
+            protocol: TCP
+            name: sshd-port
+            hostPort: 36000
+          - containerPort: 10700
+            protocol: TCP
+            name: cloud-ao-port
+            hostPort: 10700
+          - containerPort: 20021
+            protocol: TCP
+            name: push-port
+            hostPort: 20021
+          volumeMounts:
+          - mountPath: /root/.ssh/auth
+            name: sshd-auth
+          - mountPath: /usr/local/soldier/qconf_agent/script
+            name: qconf-scripts
+          - mountPath: /data/configs/qconf
+            name: qconf-configs
+          - mountPath: /data/applog
+            name: applog
+          - mountPath: /data/run
+            name: data-run
+          - mountPath: /data/message_bus/locks
+            name: mb-locks
+          - mountPath: /data/hosting
+            name: data-hosting

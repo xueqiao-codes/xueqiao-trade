@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+mainClassName = 'xueqiao.trade.hosting.position.statis.app.AppMain'
+
+shadowJar {
+    baseName = 'trade_hosting_position_statis'
+    classifier = 'jar-with-dependencies'
+    version = '1.0-SNAPSHOT'
+}
+
+dependencies {
+    compile project(':trade_hosting_position_statis_client')
+    compile project(":trade_hosting_id_maker_api")
+    compile project(':trade_hosting_push_sdk')
+    compile project(':trade_hosting_utils')
+    compile project(':trade_hosting_asset_client')
+    compile project(':trade_hosting_quot_comb_client')
+    compile 'xueqiao.trade.hosting:libthqd_client:1.2-SNAPSHOT' //行情
+    compile 'com.google.code.gson:gson:2.8.1'
+    compile 'net.qihoo:qconf-client:1.0.0'
+    compile 'org.quartz-scheduler:quartz:2.2.1'
+    compile 'org.quartz-scheduler:quartz-jobs:2.2.1'
+    compile 'net.objecthunter:exp4j-xq:0.4.8-SNAPSHOT'
+}

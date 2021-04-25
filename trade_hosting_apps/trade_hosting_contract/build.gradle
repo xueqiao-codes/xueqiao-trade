@@ -1,0 +1,18 @@
+apply plugin:'java'
+apply plugin:'application'
+apply plugin:'com.github.johnrengelman.shadow'
+
+mainClassName = 'xueqiao.trade.hosting.contract.AppMain'
+
+shadowJar {
+    baseName = 'trade_hosting_contract'
+    classifier = 'jar-with-dependencies'
+    version = '0.0.1-SNAPSHOT'
+}
+
+dependencies {
+	compile project(':trade_hosting_framework')
+	compile 'org.soldier.platform.oss:libossapi:1.0-SNAPSHOT'
+    compile 'com.kohlschutter.junixsocket:junixsocket-native-common:2.0.4'
+    compile 'com.longsheng.xueqiao.contract.online.dao.thriftapi:contract_online_dao_service:1.1'
+}

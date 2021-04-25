@@ -1,0 +1,7 @@
+apply plugin:'java'
+
+dependencies {
+	compile 'org.soldier.platform:libsvr_platform:1.4'
+	compile 'org.zeromq:jeromq:0.4.3'
+	compile 'commons-io:commons-io:2.5'
+}
